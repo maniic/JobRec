@@ -1,0 +1,44 @@
+# Instruction Manual: Setting Up the Findwork.dev API
+
+## Introduction
+
+This guide will walk you through the process of setting up the Findwork.dev API and obtaining your API key. Follow these steps to integrate the API into your application.
+
+## Step 1: Sign Up
+
+1. Visit [Findwork.dev](https://findwork.dev).
+2. Click on the "Sign Up" button.
+3. Fill in the required details to create your account.
+4. Verify your email address if prompted.
+
+## Step 2: Log In
+
+1. Go to the Findwork.dev homepage.
+2. Click on the "Log In" button.
+3. Enter your credentials to access your account.
+
+## Step 3: Access the REST API
+
+1. Once logged in, navigate to the top menu.
+2. Click on the "REST API" tab.
+
+## Step 4: Obtain Your API Key
+
+1. On the REST API page, locate the section for API keys.
+2. Click on the eye icon to reveal your API key.
+3. Copy the API key to your clipboard.
+
+## Step 5: Input the API Key into Your Program
+
+1. When you create your program files, plan to include a file named `api_key` or something similar.
+2. Paste your copied API key into this file.
+3. Ensure your application reads the API key from this file to authenticate API requests.
+
+## Additional Information
+
+- **Rate Limiting**: The API is limited to 60 requests per minute.
+- **API Filters**: You can filter jobs by various parameters such as location, employment type, and more.
+
+## Conclusion
+
+By following these steps, you will successfully set up the Findwork.dev API and obtain your API key. Ensure to handle your API key securely and integrate it properly into your application.
