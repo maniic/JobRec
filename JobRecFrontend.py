@@ -75,6 +75,7 @@ class JobRecApp:
                                       bg=self.bg, fg=self.fg)
         self.loading_label.pack()
 
+
     def start_search(self):
         """
         Begin the job search process by collecting skills and launching a background thread
@@ -83,6 +84,7 @@ class JobRecApp:
         self.loading_label.config(text="Fetching jobs...")
         self.search_button.config(state="disabled")
         threading.Thread(target=self.perform_search).start()
+
 
     def perform_search(self):
         """
@@ -113,12 +115,14 @@ class JobRecApp:
         self.search_button.config(state="normal")
         self.show_results_window(top_jobs)
 
+
     def reset_fields(self):
         """
         Clear all skill entries to allow a new search.
         """
         for entry in self.skill_entries:
             entry.delete(0, tk.END)
+
 
     def show_results_window(self, jobs):
         """
@@ -175,10 +179,21 @@ class JobRecApp:
                     command=lambda: [result_win.destroy(), self.reset_fields()]
                 ).pack(pady=20)
 
-# CHATGPT and Excersize 3/4 were both used in assisting our implementation for creating our GUI/ FrontEnd Module
 
-if __name__ == '__main__':
+def main() -> None:
+    """
+    Run the JobRec GUI application.
+    Initializes the main window and starts the event loop.
+    """
     root = tk.Tk()
     app = JobRecApp(root)
     root.mainloop()
 
+
+if __name__ == '__main__':
+    main()
+    python_ta.check_all(config={
+        'extra-imports': ['requests', 'dotenv', 'os', 'json', 'tkinter', 'threading', 'time'],
+        'allowed-io': ['display_top_jobs', 'prompt_skills', ' run_job_search', 'main', 'fetch_api_key', 'fetch_jobs'],
+        'max-line-length': 120
+    })
