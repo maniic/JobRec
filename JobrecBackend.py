@@ -1,6 +1,5 @@
 """
 JobrecBackend.py
-
 This module implements the backend logic for the JobRec recommendation system.
 It includes:
 - A weighted bipartite graph structure to model relationships between skills and jobs.
@@ -271,6 +270,6 @@ if __name__ == '__main__':
     main()
     python_ta.check_all(config={
         'extra-imports': ['requests', 'dotenv', 'os', 'json', 'tkinter', 'threading', 'time'],
-        'allowed-io': ['print', 'input'],
+        'allowed-io': ['display_top_jobs', 'prompt_skills', ' run_job_search', 'main', 'fetch_api_key', 'fetch_jobs'],
         'max-line-length': 120
     })
