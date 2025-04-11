@@ -2,150 +2,143 @@
 
 ## Introduction
 
-JobRec is a job recommendation system that uses graph-based algorithms and tree structures to provide personalized job recommendations to users. The system integrates the Findwork.dev API to fetch real-time job listings and implements efficient matching algorithms based on user profiles and job requirements.
+In today’s highly saturated job market, students and job seekers often face significant challenges in identifying job postings that align with their skills. With countless listings available across platforms, the process can quickly become overwhelming and inefficient. JobRec simplifies this process by providing an intelligent recommendation system that matches users to relevant job postings based on their skill sets using graph-based matching techniques.
+
+**Our central project goal is:**  
+*How can we design an intelligent job recommendation system that efficiently matches users to relevant job postings based on their skills?*
+
+Users can input up to five skills, which are then compared against the skills mentioned in live job listings fetched from the Findwork.dev API. We model the relationship between skills and job postings as a bipartite graph where one set of nodes represents user-input skills and the other represents job postings. An edge is created between a skill and a job if the job’s description contains that skill, and the connection is weighted by the frequency of the skill's occurrence. The resulting match score is then used to rank job recommendations.
 
 ## Features
 
-- **Graph-Based Job Matching**: Sophisticated matching algorithm using directed graphs to model job requirements and user skills
-- **Tree Structure for Job Categories**: Hierarchical organization of job categories and skills for efficient matching
-- **Real-time Job Listings**: Integration with Findwork.dev API for up-to-date job opportunities
-- **User Profile Management**: Comprehensive profile creation and management system
-- **Job Application Tracking**: Built-in system for tracking job applications and interview schedules
-- **Smart Notifications**: Automated alerts for new matching jobs and application updates
-- **Analytics Dashboard**: Insights into application success rates and job market trends
+- **Graph-Based Matching:**  
+  Constructs a weighted bipartite graph to model the relationship between user skills and job postings. The graph is built by:
+  - Mapping up to five skills (converted to lowercase) as vertices.
+  - Creating job nodes based on the job's role and company.
+  - Connecting skills and jobs via edges weighted by the frequency of each skill’s appearance in the job descriptions.
+  - Providing a fallback mechanism by flagging jobs with "[Low Match]" if no skills are detected.
 
-## Technical Architecture
+- **Real-Time Job Listings:**  
+  Retrieves live job data via the Findwork.dev API, parsing critical fields including:
+  - `role`, `company_name`, `location`, `employment_type`, `description`, `text`, `date_posted`, and `url`.
 
-### Frontend
-- Modern web application built with React.js
-- Responsive design for desktop and mobile devices
-- Interactive user interface for profile management and job browsing
-- Real-time updates and notifications
+- **Dual Interfaces:**  
+  - **Command-Line Interface (CLI):** Run the backend script to test the system via terminal prompts.
+  - **Graphical User Interface (GUI):** A Tkinter-based desktop application that offers a responsive, dark-mode interface with input validation, background processing, and detailed, color-coded job recommendations.
 
-### Backend
-- Python-based server using FastAPI
-- Integration with Findwork.dev API for job data
-- Graph-based matching algorithm implementation
-- Tree structure for job categorization
-- Secure authentication and data management
-- RESTful API endpoints for frontend communication
+## Datasets and API Details
 
-### Database
-- PostgreSQL for structured data storage
-- Redis for caching and real-time features
-- Efficient data models for user profiles and job listings
-- Graph database integration for relationship modeling
+- **Primary Data Source:**  
+  The Findwork.dev API ([https://findwork.dev/](https://findwork.dev/)) returns job listings in JSON format. Key data fields extracted include:
+  - **Role:** Job title.
+  - **Company Name:** Hiring organization.
+  - **Location:** Job location.
+  - **Employment Type:** e.g., full time, contract, part time.
+  - **Job Description:** Combined content from `description` and `text` fields.
+  - **Date Posted:** Listing date.
+  - **URL:** Direct link to the full job posting.
 
-## API Setup Instructions
+- **Preprocessing:**  
+  The system extracts and normalizes these fields (converting text to lowercase) to facilitate reliable matching against the user’s input skills.
 
-### Step 1: Sign Up
+## Computational Overview
 
-1. Visit [Findwork.dev](https://findwork.dev).
-2. Click on the "Sign Up" button.
-3. Fill in the required details to create your account.
-4. Verify your email address if prompted.
+The project is divided into two primary modules:
 
-### Step 2: Log In
+1. **Backend (JobrecBackend.py):**
+   - **API Interaction:** Uses the `fetch_jobs` function to send GET requests to the Findwork.dev API.
+   - **Graph Construction:** The `build_graph` function creates a weighted bipartite graph connecting skills and job postings.
+   - **Recommendation Logic:** The `recommend_jobs` function computes match scores for each job and returns a sorted list of top job recommendations.
+   - **Helper Functions:**  
+     - `load_api_key`: Loads the API key from a `.env` file.
+     - `prompt_skills`: Allows users to input up to five skills in the CLI mode.
 
-1. Go to the Findwork.dev homepage.
-2. Click on the "Log In" button.
-3. Enter your credentials to access your account.
-
-### Step 3: Access the REST API
-
-1. Once logged in, navigate to the top menu.
-2. Click on the "REST API" tab.
-
-### Step 4: Obtain Your API Key
-
-1. On the REST API page, locate the section for API keys.
-2. Click on the eye icon to reveal your API key.
-3. Copy the API key to your clipboard.
-
-### Step 5: Input the API Key into Your Program
-
-1. When you create your program files, plan to include a file named `api_key` or something similar.
-2. Paste your copied API key into this file.
-3. Ensure your application reads the API key from this file to authenticate API requests.
-
-## Project Structure
-
-```
-jobrec/
-├── frontend/                 # React.js frontend application
-│   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── pages/          # Page components
-│   │   ├── services/       # API service functions
-│   │   └── utils/          # Utility functions
-│   └── public/             # Static assets
-├── backend/                 # Python backend application
-│   ├── app/
-│   │   ├── api/           # API endpoints
-│   │   ├── models/        # Database models
-│   │   ├── services/      # Business logic
-│   │   └── utils/         # Utility functions
-│   └── tests/             # Test files
-└── docs/                   # Documentation
-```
+2. **Frontend (JobRecFrontend.py):**
+   - **Interactive GUI:** Built using Tkinter for a user-friendly experience.
+   - **Skill Input and Validation:** Collects user skills through text fields and provides error handling if no skills are entered.
+   - **Background Processing:** Utilizes threading to keep the GUI responsive while fetching and processing job data.
+   - **Result Display:** Presents job recommendations in a popup window with details such as location, employment type, posting date, and a color-coded match level.
+   - **Reset Functionality:** Allows users to clear input fields and perform new searches easily.
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/jobrec.git
-   cd jobrec
-   ```
+1. **Clone the Repository:**
+    ```bash
+    git clone https://github.com/maniic/JobRec.git
+    cd JobRec
+    ```
 
-2. Set up the frontend:
-   ```bash
-   cd frontend
-   npm install
-   ```
+2. **Set Up a Virtual Environment and Install Dependencies:**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    pip install -r requirements.txt
+    ```
 
-3. Set up the backend:
-   ```bash
-   cd backend
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+3. **API Key Setup:**
+   - Create a file named `.env` in the project root.
+   - Add your Findwork.dev API key in the following format:
+     ```ini
+     FINDWORK_API_KEY=your_api_key_here
+     ```
+   - Ensure the `.env` file is in the same directory as both `JobrecBackend.py` and `JobRecFrontend.py`.
 
-4. Configure environment variables:
-   - Copy `.env.example` to `.env`
-   - Update the variables with your configuration
+## Running the Program
 
-5. Start the development servers:
-   ```bash
-   # Frontend (in frontend directory)
-   npm start
-   
-   # Backend (in backend directory)
-   uvicorn app.main:app --reload
-   ```
+### Command-Line Interface (CLI)
 
-## API Documentation
+Run the backend script to use the CLI version:
+```bash
+python JobrecBackend.py
+Follow the on-screen prompts to enter up to five skills and view your job recommendations along with match scores (High, Medium, or Low).
 
-The API documentation is available at `/docs` when running the backend server. It includes detailed information about:
-- Authentication endpoints
-- User profile management
-- Job search and recommendations
-- Application tracking
-- Analytics endpoints
+Graphical User Interface (GUI)
+Launch the GUI by running:
 
-## Contributing
+bash
+Copy
+python JobRecFrontend.py
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+In the GUI:
 
-## License
+Enter Skills: Input up to five skills in the designated text fields.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Search for Jobs: Click the "🚀 Find Jobs" button.
 
-## Acknowledgments
+View Recommendations: A popup window will display the top five recommended jobs with details such as location, employment type, and posting date.
 
-- Findwork.dev for providing the job listings API
-- Contributors and maintainers of the open-source libraries used in this project
+Reset Search: Use the "🔄 Search Again" button to clear inputs and perform a new search.
+
+Discussion and Future Work
+JobRec demonstrates that a simple, skill-based job recommendation system can effectively leverage graph-based matching to provide tailored job opportunities. Key observations include:
+
+Effectiveness of Graph Structures: Using a weighted bipartite graph allows clear quantification of job relevance.
+
+User-Centric Design: Transitioning from a CLI to a fully interactive GUI improves accessibility and usability.
+
+Limitations:
+
+The unstructured nature of the API data can limit match quality.
+
+Vocabulary mismatches (e.g., synonyms) may lead to missed matches.
+
+Future enhancements could include semantic analysis, improved filtering (e.g., by location), and advanced feedback mechanisms.
+
+License
+This project is licensed under the MIT License – see the LICENSE file for details.
+
+Acknowledgments
+Findwork.dev: For providing the job listings API.
+
+Open-Source Communities: For libraries and resources that enabled rapid development.
+
+References
+Findwork.dev. “Findwork API Documentation.” Available at: https://findwork.dev/api/
+
+Python Software Foundation. “Tkinter — Python interface to Tcl/Tk.” Available at: https://docs.python.org/3/library/tkinter.html
+
+NetworkX Developers. “NetworkX: High-productivity software for complex networks.” Available at: https://networkx.org/
+
+Plotly Technologies Inc. “Plotly Python Graphing Library.” Available at: https://plotly.com/python/
+
+Bensaid, S. “python-dotenv: Load environment variables from .env.” GitHub repository. Available at: https://github.com/theskumar/python-dotenv
